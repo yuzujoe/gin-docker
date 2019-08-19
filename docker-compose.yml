@@ -15,3 +15,12 @@ services:
       - 3001:3001
     tty:
       true
+  db:
+    image: mysql:5.7.22
+    build: docker/db/Dockerfile
+    environment:
+      MYSQL_USER: "root"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: godocker
+    ports:
+      - "3306:3306"
