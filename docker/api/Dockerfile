@@ -8,6 +8,8 @@ WORKDIR /go/src/api/
 RUN apk update \
   && apk add --no-cache git \
   && go get -u github.com/codegangsta/gin \
+  && go get -u github.com/jinzhu/gorm \
+  && go get github.com/go-sql-driver/mysql \
   && go get -u github.com/golang/dep/cmd/dep \
   && dep ensure
 #ライブロードの実行
