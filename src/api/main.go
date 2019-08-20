@@ -1,20 +1,18 @@
 package main
 
 import (
-	"database/sql"
-
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var DbConnect *sql.DB
+type Message struct {
+	Message string
+}
 
 func main() {
-	DbConnect, err := sql.Open("mysql", "root:@tcp(db:3306)/godocker")
-	if err != nil {
-		panic(err.Error())
-	}
-	DbConnect.Close()
+	db := dbConnect()
+	defer db.Close()
 	r := gin.Default()
 	r.GET("/hello", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -22,4 +20,17 @@ func main() {
 		})
 	})
 	r.Run(":3001")
+}
+
+func dbConnect() *gorm.DB {
+	db, err := gorm.Open("mysql", "root:password@tcp(godockerDB)/godocker")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	db.AutoMigrate(&Message{})
+	db.Create(&Message{Message: "Helloworld"})
+
+	return db
 }
