@@ -12,6 +12,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Message is model struct
 type Message struct {
 	Message string
 }
