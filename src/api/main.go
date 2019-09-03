@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -27,22 +29,28 @@ func main() {
 }
 
 func dbConnect() *gorm.DB {
-	Load_Env()
-	// db, err := gorm.Open("mysql", "root:root@tcp(godockerDB)/godocker")
+	LoadEnv()
 
-	db, err := gorm.Open("mysql", os.Getenv("MYSQL_ROOT_USER")+":"+os.Getenv("MYSQL_ROOT_PASSWORD")+"@tcp(godockerDB)/"+os.Getenv("MYSQL_DATABASE"))
+	var err error
+	path := strings.Join([]string{os.Getenv("MYSQL_USER"), ":", os.Getenv("MYSQL_PASSWORD"), "@tcp(", os.Getenv("DB_HOST"), ":", os.Getenv("DB_PORT"), ")/", os.Getenv("MYSQL_DATABASE"), "?charset=utf8&parseTime=True&loc=Local"}, "")
+	fmt.Println(path)
+
+	db, err := gorm.Open("mysql", path)
 
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	db.AutoMigrate(&Message{})
-	db.Create(&Message{Message: "Helloworld"})
+	// db.Create(&Message{Message: "Helloworld"})
+
+	fmt.Println("Success connect gin_docker database")
 
 	return db
 }
 
-func Load_Env() {
+// LoadEnv loading envfile
+func LoadEnv() {
 	err := godotenv.Load()
 
 	if err != nil {
