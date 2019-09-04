@@ -2,14 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"gin-docker/src/api/config"
 	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/joho/godotenv"
 )
 
 // Message is model struct
@@ -30,11 +29,10 @@ func main() {
 }
 
 func dbConnect() *gorm.DB {
-	LoadEnv()
+	config.LoadEnv()
 
 	var err error
 	path := strings.Join([]string{os.Getenv("MYSQL_USER"), ":", os.Getenv("MYSQL_PASSWORD"), "@tcp(", os.Getenv("DB_HOST"), ":", os.Getenv("DB_PORT"), ")/", os.Getenv("MYSQL_DATABASE"), "?charset=utf8&parseTime=True&loc=Local"}, "")
-	fmt.Println(path)
 
 	db, err := gorm.Open("mysql", path)
 
@@ -48,13 +46,4 @@ func dbConnect() *gorm.DB {
 	fmt.Println("Success connect gin_docker database")
 
 	return db
-}
-
-// LoadEnv loading envfile
-func LoadEnv() {
-	err := godotenv.Load()
-
-	if err != nil {
-		log.Fatal(err)
-	}
 }
